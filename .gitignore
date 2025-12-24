@@ -1,0 +1,19 @@
+# STM32CubeIDE specific files and folders to ignore
+.metadata/
+.settings/
+Debug/
+Release/
+*.launch
+*.elf
+*.map
+*.su
+*.d
+.mxproject
+
+# Common build and object files to ignore (optional, often covered by Debug/Release)
+*.o
+*.obj
+*.ko
+
+# Microcontroller linker scripts (generated during build)
+*.ld
