@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdio.h>
+#include "nn.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -63,7 +64,6 @@ static void MX_ADC1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint16_t ADC_VAL[3];
-int count = 0;
 float s1 = 0.0f;
 float s2 = 0.0f;
 float s3 = 0.0f;
@@ -152,12 +152,18 @@ int main(void)
 			s2 = normalize_adc_value(ADC_VAL[1]);
 			s3 = normalize_adc_value(ADC_VAL[2]);
 
+			float sensor_values[3] = { s1, s2, s3 };
+
 			if (are_sensors_valid(s1, s2, s3))
 			{
-				send_sensor_data_for_training(s1,s2,s3);
+				char* classification = nn_predict(sensor_values);
+
+				int length = sprintf(message,"%s\r\n", classification);
+
+				HAL_UART_Transmit(&huart3, (uint8_t*)message, length, HAL_MAX_DELAY);
 			}
+
 	  }
-	  count++;
 	  HAL_Delay(100);
   }
   /* USER CODE END 3 */
