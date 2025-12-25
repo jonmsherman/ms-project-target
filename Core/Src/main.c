@@ -67,14 +67,14 @@ int count = 0;
 float s1 = 0.0f;
 float s2 = 0.0f;
 float s3 = 0.0f;
-int isADCFinished = 0;
+int is_adc_finished = 0;
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	isADCFinished = 1;
+	is_adc_finished = 1;
 }
 
-float normalizeADCValue(long value) {
+float normalize_adc_value(long value) {
 	float normalizedValue = (float) value / 50000.0f;
 
 	if (normalizedValue > 1.0f) return 1.0f;
@@ -82,14 +82,14 @@ float normalizeADCValue(long value) {
 	return normalizedValue;
 }
 
-int areSensorValuesValid(float sensor1, float sensor2, float sensor3)
+int are_sensors_valid(float sensor1, float sensor2, float sensor3)
 {
 	if (s1 < 0.05 && s2 < 0.05 && s3 < 0.05) return 0;
 
 	return 1;
 }
 
-void sendSensorDataForTraining(float s1, float s2, float s3)
+void send_sensor_data_for_training(float s1, float s2, float s3)
 {
 	uint8_t message[50];
 	int len = sprintf(message, "s1=%f,s2=%f,s3=%f\r\n", s1, s2, s3);
@@ -146,17 +146,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  int len = sprintf(message,"Hello World\r\n");
-//	  HAL_UART_Transmit(&huart3, (uint8_t*)message, len, HAL_MAX_DELAY);
-	  if (isADCFinished == 1)
+	  if (is_adc_finished == 1)
 	  {
-			s1 = normalizeADCValue(ADC_VAL[0]);
-			s2 = normalizeADCValue(ADC_VAL[1]);
-			s3 = normalizeADCValue(ADC_VAL[2]);
+			s1 = normalize_adc_value(ADC_VAL[0]);
+			s2 = normalize_adc_value(ADC_VAL[1]);
+			s3 = normalize_adc_value(ADC_VAL[2]);
 
-			if (areSensorValuesValid(s1, s2, s3))
+			if (are_sensors_valid(s1, s2, s3))
 			{
-				sendSensorDataForTraining(s1,s2,s3);
+				send_sensor_data_for_training(s1,s2,s3);
 			}
 	  }
 	  count++;
